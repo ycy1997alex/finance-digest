@@ -12,6 +12,7 @@ try {
   var t = localStorage.getItem("fd-theme"), f = localStorage.getItem("fd-fs");
   if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
   if (f === "2" || f === "3") document.documentElement.setAttribute("data-fs", f);
+  if (localStorage.getItem("fd-width") === "wide") document.documentElement.classList.add("layout-wide");
 } catch (e) {}
 </script>
 <style>
@@ -25,8 +26,11 @@ try {
   --warn:#9a5a00; --warn-tint:#fff1d6;
   --shadow:0 1px 2px rgba(20,20,10,.04),0 6px 20px rgba(20,20,10,.05);
   --radius:16px; --topbar-h:57px;
+  --page-w:820px;   /* 閱讀寬度，與 ycy1997alex.github.io 的 .container 相同 */
   color-scheme:light;
 }
+/* 滿版寬度：只在電腦版生效（手機本來就比 820px 窄，按鈕也藏起來），做法同 ycy1997alex.github.io */
+@media (min-width:768.1px){html.layout-wide{--page-w:none}}
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#0e1014; --surface:#161a21; --surface-2:#1d222b; --line:#272d38; --line-2:#343b48;
@@ -82,7 +86,7 @@ svg{width:1.2em;height:1.2em;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .topbar{position:sticky;top:0;z-index:30;border-bottom:1px solid var(--line);
   background:var(--bg);background:color-mix(in srgb,var(--bg) 86%,transparent);
   -webkit-backdrop-filter:blur(12px) saturate(1.3);backdrop-filter:blur(12px) saturate(1.3)}
-.topbar .inner{max-width:880px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:10px 16px}
+.topbar .inner{max-width:var(--page-w);margin:0 auto;display:flex;align-items:center;gap:16px;padding:10px 16px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:1.02rem;letter-spacing:.04em;margin-right:auto;white-space:nowrap}
 .mainnav{display:flex;gap:4px}
 .mainnav a{text-decoration:none;padding:6px 12px;border-radius:10px;color:var(--muted);font-weight:700;font-size:.92rem}
@@ -92,7 +96,9 @@ svg{width:1.2em;height:1.2em;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .iconbtn{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:10px;border:0;background:transparent;color:var(--muted);cursor:pointer}
 .iconbtn:hover{background:var(--surface-2);color:var(--fg)}
 .tabbar{display:none}
-main{max-width:880px;margin:0 auto;padding:18px 16px 56px}
+main{max-width:var(--page-w);margin:0 auto;padding:18px 16px 56px}
+html.layout-wide #btnWidth{color:var(--accent);background:var(--accent-tint)}
+@media (max-width:768px){#btnWidth{display:none}}
 @media (max-width:639px){
   .mainnav,#btnSettings{display:none}
   .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;border-top:1px solid var(--line);
@@ -228,7 +234,28 @@ a.ind:hover{text-decoration:underline}
 .side .lab{font-weight:800;font-size:.85rem}
 .side.bull .lab{color:var(--bull)}
 .side.bear .lab{color:var(--bear)}
-.an-tools{display:flex;gap:8px;margin:-2px 0 2px}
+.an-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:-2px 0 2px}
+.an-fold{display:flex;gap:8px}
+.an-tools .seg{margin-left:auto;padding:3px;gap:3px}
+.an-tools .seg button{padding:3px 14px;font-size:.84rem}
+#s-analysts[data-view="table"] .an-cards,#s-analysts[data-view="table"] .an-fold{display:none}
+#s-analysts:not([data-view="table"]) .an-tables{display:none}
+/* 比較表格：只有表格本身左右捲動，頁面不跟著變寬；第一欄固定 */
+.tbl-h{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:18px 0 8px;font-size:1rem}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow)}
+.tbl{border-collapse:separate;border-spacing:0;width:100%;font-size:.88rem;line-height:1.6}
+.tbl th,.tbl td{padding:8px 10px;border-top:1px solid var(--line);text-align:left;vertical-align:top}
+.tbl thead th{border-top:0;background:var(--surface-2);font-size:.78rem;color:var(--muted);font-weight:800;white-space:nowrap}
+.tbl .sticky{position:sticky;left:0;z-index:1;background:var(--surface);border-right:1px solid var(--line);white-space:nowrap}
+.tbl thead .sticky{background:var(--surface-2);z-index:2}
+.tbl td.wide{min-width:13em}
+.tbl td.mid{min-width:9em}
+.tbl .none{color:var(--faint)}
+.tbl .code{margin-left:5px}
+.tstk{white-space:nowrap}
+.tstk + .tstk{margin-top:3px}
+.mx td,.mx thead th:not(.sticky){text-align:center;vertical-align:middle}
+.mx td.cnt{font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
 details.an{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-top:10px;box-shadow:var(--shadow);overflow:hidden}
 details.an > summary{list-style:none;display:flex;align-items:center;gap:12px;padding:13px 14px 13px 16px;cursor:pointer}
 details.an > summary::-webkit-details-marker{display:none}
@@ -332,6 +359,8 @@ a.day.cur{outline:2px solid var(--accent);outline-offset:1px}
 .entity{display:flex;align-items:center;gap:14px;margin:2px 0 12px}
 .entity .big{font-size:1.65rem;font-weight:800;line-height:1.25}
 .entity .avatar{width:56px;height:56px;font-size:1.3rem}
+.entity > div{min-width:0}
+.entity .an-ch{white-space:normal;overflow-wrap:anywhere}   /* 頻道多的分析師在手機上換行，不撐寬頁面 */
 .summary{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px}
 .tline{margin:0;padding:0;list-style:none}
 .tline > li{position:relative;padding:0 0 18px 24px}
@@ -398,6 +427,7 @@ dialog::backdrop{background:rgba(10,12,16,.5)}
         <a href="#/track" data-nav="track">追蹤</a>
       </nav>
       <div class="tools">
+        <button class="iconbtn" id="btnWidth" data-act="width" aria-pressed="false" aria-label="切換為滿版寬度" title="切換為滿版寬度"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5v14M21 5v14M7 12h10M10 9l-3 3 3 3M14 9l3 3-3 3"/></svg></button>
         <button class="iconbtn" id="btnSettings" data-act="settings" aria-label="閱讀設定"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></button>
         <button class="iconbtn" data-act="lock" aria-label="鎖定"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></button>
       </div>
@@ -421,7 +451,7 @@ dialog::backdrop{background:rgba(10,12,16,.5)}
       <div class="seg" id="segTheme"><button data-theme="system">跟隨系統</button><button data-theme="light">淺色</button><button data-theme="dark">深色</button></div></div>
     <div class="lockrow">
       <button class="btn" data-act="lock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>鎖定這個分頁</button>
-      <p class="note">字級與配色只記在這台裝置的瀏覽器裡。內容由 AI 依節目自動整理，不構成投資建議。</p>
+      <p class="note">字級、配色、寬度與表格檢視只記在這台裝置的瀏覽器裡。內容由 AI 依節目自動整理，不構成投資建議。</p>
     </div>
   </div>
 </dialog>
@@ -651,14 +681,50 @@ function analystsHtml(r) {
   const stocks = a => a.stocks.length ? `<div class="sub-h">個股</div>${a.stocks.map(s => `<div class="stk">
       <div class="stk-head">${stockLink(s)}${attBadge(s.attitude)}<span class="hz">信心 ${esc(s.confidence)} · ${esc(s.horizon)}</span></div>
       ${s.reason ? `<div class="reason">${esc(s.reason)}</div>` : ""}${s.chain ? `<span class="chain">供應鏈：${esc(s.chain)}</span>` : ""}</div>`).join("")}` : "";
-  return `<section class="sec" id="s-analysts"><h2 class="sec-h">👤 分析師重點<span class="aside">${r.analysts.length} 位 · 點姓名展開</span></h2>
-    <div class="an-tools"><button class="btn sm" data-act="expand-all">全部展開</button><button class="btn sm" data-act="collapse-all">全部收合</button></div>
-    ${r.analysts.map(a => `<details class="an"><summary>
+  const view = store.get("fd-anview") === "table" ? "table" : "cards";
+  const seg = ["cards", "卡片", "table", "表格"];
+  return `<section class="sec" id="s-analysts" data-view="${view}"><h2 class="sec-h">👤 分析師重點<span class="aside">${r.analysts.length} 位</span></h2>
+    <div class="an-tools"><span class="an-fold"><button class="btn sm" data-act="expand-all">全部展開</button><button class="btn sm" data-act="collapse-all">全部收合</button></span>
+      <div class="seg" role="group" aria-label="檢視方式">${[0, 2].map(k => `<button type="button" data-act="an-view" data-v="${seg[k]}" class="${view === seg[k] ? "on" : ""}" aria-pressed="${view === seg[k]}">${seg[k + 1]}</button>`).join("")}</div></div>
+    <div class="an-cards">${r.analysts.map(a => `<details class="an"><summary>
       <span class="avatar">${esc(a.name[0])}</span>
       <span class="an-id"><span class="an-name">${esc(a.name)}</span><span class="an-ch">${esc(a.channels.join("、"))}${a.topic ? ` · ${esc(a.topic)}` : ""}</span></span>
       ${attBadge(a.attitude)}${ICON.chev}</summary>
       <div class="an-body">${fields(a)}${stocks(a)}<a class="more" href="#/analyst/${encodeURIComponent(a.name)}">看${esc(a.name)}的歷次觀點 ›</a></div>
-    </details>`).join("")}</section>`;
+    </details>`).join("")}</div>
+    <div class="an-tables">${analystTable(r)}${stockMatrix(r)}</div></section>`;
+}
+
+/* 比較表格（一）：每列一位分析師，橫向比較態度、主題、產業與個股 */
+const analystLink = n => `<a class="stk-link" href="#/analyst/${encodeURIComponent(n)}">${esc(n)}</a>`;
+const stockNameLink = s => `<a class="stk-link" href="#/stock/${encodeURIComponent(stockKey(s.name, s.code))}">${esc(s.name)}</a>`;
+const NONE = `<span class="none">—</span>`;
+function analystTable(r) {
+  const inds = (xs, side) => xs.length ? `<div class="chips">${xs.map(x => `<span class="ind ${side}">${esc(x)}</span>`).join("")}</div>` : NONE;
+  const rows = r.analysts.map(a => `<tr><th class="sticky" scope="row">${analystLink(a.name)}</th>
+    <td>${attBadge(a.attitude) || NONE}</td><td>${a.confidence ? esc(a.confidence) : NONE}</td>
+    <td class="wide">${a.topic ? esc(a.topic) : NONE}</td><td class="mid">${inds(a.bull_ind, "bull")}</td><td class="mid">${inds(a.bear_ind, "bear")}</td>
+    <td>${a.stocks.length ? a.stocks.map(s => `<div class="tstk">${stockNameLink(s)} ${attBadge(s.attitude)}</div>`).join("") : NONE}</td></tr>`).join("");
+  return `<h3 class="tbl-h">分析師對照<span class="aside">點姓名看歷次觀點</span></h3>
+    <div class="tbl-wrap"><table class="tbl"><thead><tr><th class="sticky" scope="col">分析師</th><th scope="col">態度</th><th scope="col">信心</th>
+      <th scope="col">主題</th><th scope="col">看好產業</th><th scope="col">看壞產業</th><th scope="col">個股</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+/* 比較表格（二）：列是本期被提到的個股，欄是分析師，格子是態度；被越多人提到的排越前面 */
+function stockMatrix(r) {
+  const cols = r.analysts.filter(a => a.stocks.length);
+  const rows = new Map();
+  for (const a of cols) for (const s of a.stocks) {
+    const k = stockKey(s.name, s.code);
+    const e = rows.get(k) || { s, by: new Map() };
+    if (!e.by.has(a.name)) e.by.set(a.name, s.attitude);
+    rows.set(k, e);
+  }
+  if (!rows.size) return "";
+  const list = [...rows.values()].sort((p, q) => q.by.size - p.by.size);
+  return `<h3 class="tbl-h">個股 × 分析師<span class="aside">${list.length} 檔 · 格子是態度，空白＝沒提到</span></h3>
+    <div class="tbl-wrap"><table class="tbl mx"><thead><tr><th class="sticky" scope="col">個股</th><th scope="col">人數</th>${cols.map(a => `<th scope="col">${analystLink(a.name)}</th>`).join("")}</tr></thead>
+    <tbody>${list.map(e => `<tr><th class="sticky" scope="row">${stockLink(e.s)}</th><td class="cnt">${e.by.size}</td>${cols.map(a => `<td>${attBadge(e.by.get(a.name))}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
 function sourcesHtml(r) {
@@ -898,6 +964,14 @@ document.addEventListener("click", async e => {
     else toast("複製失敗，請改用長按選取");
   } else if (act === "share") {
     toast(await copyText(pageUrl(CURRENT)) ? "已複製這一期的連結" : "複製失敗");
+  } else if (act === "an-view") {
+    const v = el.dataset.v === "table" ? "table" : "cards";
+    store.set("fd-anview", v);
+    $("#s-analysts").dataset.view = v;
+    $$("#s-analysts [data-act=an-view]").forEach(b => { const on = b.dataset.v === v; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+  } else if (act === "width") {
+    store.set("fd-width", root.classList.toggle("layout-wide") ? "wide" : "normal");
+    syncWidth();
   } else if (act === "expand-all" || act === "collapse-all") {
     $$("details.an").forEach(d => { d.open = act === "expand-all"; });
   } else if (act === "settings") {
@@ -920,6 +994,12 @@ function syncSeg() {
   $$("#segFs button").forEach(b => b.classList.toggle("on", b.dataset.fs === fs));
   $$("#segTheme button").forEach(b => b.classList.toggle("on", b.dataset.theme === th));
 }
+function syncWidth() {
+  const wide = root.classList.contains("layout-wide"), label = wide ? "切換為閱讀寬度" : "切換為滿版寬度";
+  const b = $("#btnWidth");
+  b.setAttribute("aria-pressed", wide); b.setAttribute("aria-label", label); b.title = label;
+}
+syncWidth();
 $("#segFs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { applyFs(b.dataset.fs); syncSeg(); } });
 $("#segTheme").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { applyTheme(b.dataset.theme); syncSeg(); } });
 $("#settings").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
