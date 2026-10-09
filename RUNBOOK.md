@@ -2,7 +2,7 @@
 
 > 排程任務每天只做一件事：讀這份檔案，從第 0 步照順序做到最後。
 > 流程要改，就改這份檔案與 `tools/` 底下的腳本，不改排程任務本身。
-> 狀態：2026-10-09 用 10/1～10/8 七份報告實測過第 1～5 步；第 6 步（發布網站）已建立，本機測過，尚未實際推上 GitHub Pages；LINE 推播尚未建置。
+> 狀態：2026-10-09 用 10/1～10/8 七份報告實測過第 1～5 步；第 6 步（發布網站）已建立，本機測過，尚未實際推上 GitHub Pages。只發布網站，不推 LINE。
 
 ## 固定設定
 
@@ -108,7 +108,7 @@
    & C:\Users\Alex\anaconda3\envs\finance-digest\python.exe publish.py reports\YYYY-MM-DD_EEE.txt
    ```
 
-2. 腳本會依序：檢查報告 → 從 `processed.json` 取影片連結 → 加密存到 `data/reports/` → 重建 `docs/` → 確認只有密文 → commit `publish: YYYY-MM-DD` 並 push → 等網站 https://ycy1997alex.github.io/finance-digest/ 上線 → 在 `runs` 這筆紀錄寫回 `site_published`、`published_at`。LINE 推播尚未建置，會印「略過」。
+2. 腳本會依序：檢查報告 → 從 `processed.json` 取影片連結 → 加密存到 `data/reports/` → 重建 `docs/` → 確認只有密文 → commit `publish: YYYY-MM-DD` 並 push → 等網站 https://ycy1997alex.github.io/finance-digest/ 上線 → 在 `runs` 這筆紀錄寫回 `site_published`、`published_at`。
 3. 依結束碼處理：
 
    | 結束碼 | 意思 | 怎麼做 |
@@ -147,4 +147,4 @@
 ## 修訂紀錄
 
 - 2026-10-09：建立草稿；同日依實測改寫第 1～5 步，新增 `tools/yt_discover.js`、`tools/notebook_run.js`。
-- 2026-10-09：第 6 步改為執行 `publish.py`（只發布網站，LINE 尚未建置）。
+- 2026-10-09：第 6 步改為執行 `publish.py`；同日決定只發布網站，不做 LINE 推播。

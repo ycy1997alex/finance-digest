@@ -2,7 +2,7 @@
 
 台灣財經 YouTube 節目每日摘要，改用 **Claude Desktop 排程任務 + Claude in Chrome + Gemini Notebook（原 NotebookLM）** 的路線。
 
-每天 21:42 由排程任務讀 `RUNBOOK.md` 照做：用 Chrome 找出各頻道的新影片 → 貼進固定的 Gemini Notebook 筆記本 → 用提示詞檔產生當日綜合報告 → 存成 `reports/YYYY-MM-DD_EEE.txt` → 執行 `publish.py` 發布到加密網站 https://ycy1997alex.github.io/finance-digest/ （LINE 推播之後再做）。22:22 補跑，今天已完成就直接結束。
+每天 21:42 由排程任務讀 `RUNBOOK.md` 照做：用 Chrome 找出各頻道的新影片 → 貼進固定的 Gemini Notebook 筆記本 → 用提示詞檔產生當日綜合報告 → 存成 `reports/YYYY-MM-DD_EEE.txt` → 執行 `publish.py` 發布到加密網站 https://ycy1997alex.github.io/finance-digest/ 。網站是唯一的發布方式，不做 LINE 推播。22:22 補跑，今天已完成就直接結束。
 
 ## 和 finance-digest-a 的差別
 
@@ -20,7 +20,7 @@
 | 平日版／週日週末版／休市不出報告（D17） | 寫進 `RUNBOOK.md` 第 0 步 |
 | 待補 48 小時／3 次期限（D13） | 寫進 `RUNBOOK.md` 第 2 步 |
 | 加密網站 | -a 的 `render`、`crypto`、`publish`、`guard` 模組與網站模板，複製到 `fd/`（不 import 舊 repo）；網站設計照舊 |
-| LINE 推播 | 尚未搬；之後移植 -a 的 `line.py` |
+| LINE 推播 | 不沿用（2026-10-09 決定只發布網站）；網站上的「複製 LINE 版」按鈕保留，需要時手動貼 |
 
 ## 目錄
 
@@ -41,7 +41,7 @@ finance-digest/
 ├── logs/                   每次執行的紀錄
 ├── publish.py              發布一份報告到網站（RUNBOOK 第 6 步）
 ├── fd/                     publish.py 用的模組
-│   ├── render.py           報告文字 → 網站用結構、LINE 精簡版
+│   ├── render.py           報告文字 → 網站用結構、「複製 LINE 版」用的精簡版
 │   ├── website.py          產生 docs/（只寫有變動的檔案）
 │   ├── crypto.py           PBKDF2 + AES-GCM，與瀏覽器 WebCrypto 相容
 │   ├── guard.py            確認 docs/、data/ 只有密文

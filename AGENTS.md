@@ -1,6 +1,6 @@
 # AGENTS.md — finance-digest
 
-台灣財經 YouTube 節目每日摘要：Claude Desktop 排程任務用 Claude in Chrome 操作 YouTube 與 Gemini Notebook，產出每日綜合報告，存到 `reports/`，再由 `publish.py` 發布到加密網站（LINE 推播尚未建置）。給所有 AI agent 的專案規則；`CLAUDE.md` 只匯入本檔，規則只改這裡。
+台灣財經 YouTube 節目每日摘要：Claude Desktop 排程任務用 Claude in Chrome 操作 YouTube 與 Gemini Notebook，產出每日綜合報告，存到 `reports/`，再由 `publish.py` 發布到加密網站。網站是唯一的發布目的地，不做 LINE 推播。給所有 AI agent 的專案規則；`CLAUDE.md` 只匯入本檔，規則只改這裡。
 
 - 每日流程的唯一依據是 `RUNBOOK.md`。排程任務只做「讀 RUNBOOK.md 並照做」；流程要改，改 RUNBOOK.md 與 `tools/`，不改排程任務本身。
 - 計畫、待辦與決策紀錄在 `ToDo.md`（唯一來源）：完成一項就打勾並寫上驗證結果與日期；「本人待辦」只有本人說完成才打勾。
@@ -14,14 +14,14 @@
 |---|---|
 | Claude Desktop 排程任務 | 每天 21:42（補跑 22:22）照 RUNBOOK 執行：選片、Gemini Notebook 產報告、存檔、發布 |
 | Claude in Chrome | 操作 youtube.com 與 notebook.google.com（腳本在 `tools/*.js`） |
-| Claude Code | 開發與維護 `tools/`、`publish.py`、網站與 LINE 推播；除錯 |
+| Claude Code | 開發與維護 `tools/`、`publish.py`、網站；除錯 |
 
 ## 環境
 
 - Windows 11，PowerShell。Python 用 conda 環境 `finance-digest`：`C:\Users\Alex\anaconda3\envs\finance-digest\python.exe`
 - 主控台是 cp950，印中文前先設 `$env:PYTHONIOENCODING = "utf-8"`
 - Gemini Notebook 筆記本：https://notebook.google.com/notebook/2bffc8e2-0d84-4435-8ddc-e563f2f977a8 （固定來源：提示詞「台灣財經 YouTube 影片摘要指令」與 TWSE ISIN strMode=2／4／5，不可刪）
-- 金鑰、token（之後的 LINE、GitHub 等）只放使用者環境變數，不寫進任何檔案、log、命令列或對話
+- 密碼、金鑰、token（`SITE_PASSWORD` 等）只放使用者環境變數，不寫進任何檔案、log、命令列或對話
 
 ## 網站（2026-10-09 本人決定）
 
@@ -29,7 +29,7 @@
 - 設計沿用 `D:\Repo\finance-digest-a` 的網站（密碼解鎖頁 + 單頁應用：最新一期、封存月曆、追蹤），模板在 `fd/site_template/index.html`；改版以 -a 的設計為準，不另起爐灶。
 - 全站加密：密碼是使用者環境變數 `SITE_PASSWORD`；`docs/` 與 `data/` 只能有密文與 `fd/guard.py` 白名單上的檔案。
 - 程式：`publish.py`（命令列與發布流程）＋ `fd/`（`render` 解析報告、`website` 產生 `docs/`、`crypto`、`guard`、`check`），測試在 `tests/`。
-- LINE 推播先不做（ToDo.md 第 4 節），`publish.py` 第 9 步只記「尚未建置」。
+- 不做 LINE 推播（2026-10-09 本人決定：網站已達到需要的效果）。不要再加 LINE Messaging API、官方帳號或任何推播管道；要分享時由本人用網站上的「複製 LINE 版」按鈕手動貼（內容是報告資料裡的 `line_short`，由 `fd/render.py` 產生，要保留）。
 
 ## 紅線
 
