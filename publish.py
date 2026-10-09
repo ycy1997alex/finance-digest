@@ -28,7 +28,9 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 
 import requests
+import yaml
 
+from fd import corrections
 from fd.check import blocking_problems, warnings
 from fd.guard import check_public_tree
 from fd.render import line_short, parse_report
@@ -214,6 +216,12 @@ def publish(path: Path, password: str | None, push: bool = True, republish: bool
     day, stem, text = read_report(path)
     for w in warnings(text):
         log(f"提醒（不擋發布）：{w}")
+    try:   # 原稿不改，校正只套用在要發布的副本
+        text, fixed = corrections.apply(text, corrections.load(root / "config/corrections.yaml"))
+    except (ValueError, yaml.YAMLError) as ex:
+        raise StepError("第 3 步（校正表）", str(ex), 1) from ex
+    for f in fixed:
+        log(f"校正：{f}")
     if not password:
         raise StepError("第 4 步（加密）", "沒有設定環境變數 SITE_PASSWORD", 1)
     state_path = root / "data/processed.json"
@@ -232,7 +240,8 @@ def publish(path: Path, password: str | None, push: bool = True, republish: bool
         raise StepError("第 4 步（加密）", str(ex), 1) from ex
     sealed = data / f"reports/{day}.json.enc"
     if sealed.exists() and not republish:
-        log(f"第 4 步：{sealed.name} 已存在，不重寫（要覆寫請加 --republish）")
+        log(f"第 4 步：{sealed.name} 已存在，不重寫（要覆寫請加 --republish）"
+            + ("；本次的校正不會反映到網站上" if fixed else ""))
     else:
         write_sealed(sealed, report, mk)
         log(f"第 4 步：已加密存到 data/reports/{sealed.name}")

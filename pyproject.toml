@@ -4,7 +4,7 @@ name = "finance-digest"
 version = "0.1.0"
 description = "台灣財經 YouTube 節目每日摘要：報告發布到加密網站"
 requires-python = ">=3.13"
-dependencies = ["cryptography", "requests"]
+dependencies = ["cryptography", "requests", "pyyaml"]
 
 [project.optional-dependencies]
 dev = ["pytest"]

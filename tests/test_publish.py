@@ -122,6 +122,27 @@ def test_rewritten_short_title_is_matched_by_channel_order():
     assert [(s["n"], s["video_id"]) for s in sources] == [(1, "early"), (2, "late")] and notes == []
 
 
+def test_corrections_reach_the_site_but_not_the_original(tmp_path):
+    path = setup(tmp_path)
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config/corrections.yaml").write_text("analysts:\n  王大明: 王大銘\n", encoding="utf-8")
+    code, logs = run(tmp_path, path, FakeGit(tmp_path), push=False)
+    ring = json.loads((tmp_path / "docs/data/keyring.json").read_text(encoding="utf-8"))
+    r = read_sealed(tmp_path / "data/reports/2026-10-03.json.enc", unwrap_key(ring, PW))
+    assert code == 0 and any("王大明 → 王大銘" in l for l in logs)
+    assert r["parsed"]["analysts"][0]["name"] == "王大銘" and "王大明" not in r["text"]
+    assert "王大明" in path.read_text(encoding="utf-8")                  # reports/ 原稿不改
+
+
+def test_bad_corrections_table_stops_before_publishing(tmp_path):
+    path = setup(tmp_path)
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config/corrections.yaml").write_text("names:\n  a: b\n", encoding="utf-8")
+    with pytest.raises(publish.StepError) as e:
+        run(tmp_path, path, FakeGit(tmp_path))
+    assert e.value.code == 1 and "校正表" in str(e.value) and not (tmp_path / "docs").exists()
+
+
 def test_annotated_missing_videos_reach_the_site(tmp_path):
     text = REPORT + "\n▊▊▊⚠️ 未能讀取的影片 ▊▊▊\n・（範例頻道 F）晚間節目（將於下次報告重試）\n"
     path = setup(tmp_path, text)
