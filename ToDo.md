@@ -22,9 +22,9 @@
 ### 現在
 
 - [ ] 確認 D1～D4（下一節）的建議做法，或告訴 Claude Code 要改哪一項
-- [ ] 讓 Claude Code 做第一次 commit 與 push（第 1 節）時，在對話中明確授權
+- [x] 讓 Claude Code 做第一次 commit 與 push（第 1 節）時，在對話中明確授權（2026-10-09 本人授權）
 - [ ] 停用舊專案的排程：GitHub → `finance-digest-a` → Actions → daily → 右上「⋯」→ **Disable workflow**。不停的話它每天 21:42、22:22 還會跑，失敗就寄信
-- [ ] repo `finance-digest` → Settings → Pages：Source 選 **Deploy from a branch**，Branch 選 `main`、資料夾 `/docs`（第 3 節第一次推上 `docs/` 之後再設也可以）
+- [ ] repo `finance-digest` → Settings → Pages：Source 選 **Deploy from a branch**，Branch 選 `main`、資料夾 `/docs`（`docs/` 已在 2026-10-09 推上去，7 期都在；設好後網站才會上線，目前 404）
 
 ### LINE（第 4 節，網站穩定後再做；舊專案 Phase 4 的步驟都還沒做）
 
@@ -64,8 +64,8 @@
 - [x] 確認 `.gitignore` 含 `reports/`（D1）與 `.env`、`__pycache__/` 等 → verify: `git status --untracked-files=all` 看不到 `reports/*.txt`（2026-10-09：只列出 `reports/.gitkeep`）
 - [x] `git config core.quotepath false`（讓 `prompts/提示詞.txt` 正常顯示）（2026-10-09）
 - [x] 掃描要 commit 的檔案裡沒有金鑰、token、密碼 → verify: 搜尋 `token`、`key`、`password`、`SITE_PASSWORD=` 等字串沒有實值（2026-10-09：命中的都是說明文字；`tools/yt_discover.js` 的 `INNERTUBE_API_KEY` 是執行時從頁面讀，沒有實值）
-- [ ] `git remote add origin https://github.com/ycy1997alex/finance-digest.git`
-- [ ] 第一次 commit 與 push（**本人授權後才做**）→ verify: GitHub 上看得到 `AGENTS.md`、`RUNBOOK.md`、`tools/`，看不到 `reports/`
+- [x] `git remote add origin https://github.com/ycy1997alex/finance-digest.git`（2026-10-09）
+- [x] 第一次 commit 與 push（**本人授權後才做**）→ verify: GitHub 上看得到 `AGENTS.md`、`RUNBOOK.md`、`tools/`，看不到 `reports/`（2026-10-09：`ebf6a1c 🎉 feat: initial commit`；GitHub API 列出 `AGENTS.md`、`RUNBOOK.md`、`tools` 等，`reports/` 只有 `.gitkeep`）
 
 ## 2. 移植舊專案的網站與 LINE 程式
 
