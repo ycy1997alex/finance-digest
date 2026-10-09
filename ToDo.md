@@ -111,7 +111,7 @@
 - [ ] `tools/yt_discover.js` 的 `RULES` 與 `config/channels.yaml` 是兩份手寫資料，加一個檢查（pytest 讀 yaml 與 js 比對 inc／exc／min／weekend_only／publish_weekdays）→ verify: 改一邊不改另一邊時測試失敗
 - [ ] `config/twse_holidays.json` 只到 2026 年；年底前抓 2027 年的證交所休市日期表（`https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule`）
 - [x] `reports/2026-10-02_Fri.txt` 影片來源清單把「黃豐凱」寫成「黃風凱」（Gemini 抄錯）；本人決定要不要手改（2026-10-09：改用校正表 `config/corrections.yaml` 在發布時修正，原稿不動）
-- [ ] 校正表 `config/corrections.yaml` 裡待確認的項目：元大 10/07 的「張豐進」是否為「陳豐進」→ 本人確認後拿掉該行開頭的 `#`，重發 10/07
+- [x] 校正表 `config/corrections.yaml` 裡待確認的項目：元大 10/07 的「張豐進」是否為「陳豐進」→ 本人確認後拿掉該行開頭的 `#`，重發 10/07（2026-10-09：本人查證為「游豐進」，校正表改為 張豐進 → 游豐進，10/07 已重發）
 - [ ] 每週看一次 `python -m fd.corrections` 的人名清單，有同一人兩種寫法就加進校正表、重發受影響的期別
 - [ ] 每月檢查一次 `processed.json` 有沒有照 RUNBOOK 刪掉 30 天前的紀錄
 
