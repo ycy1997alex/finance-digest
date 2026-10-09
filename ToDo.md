@@ -26,11 +26,9 @@
 - [ ] 停用舊專案的排程：GitHub → `finance-digest-a` → Actions → daily → 右上「⋯」→ **Disable workflow**。不停的話它每天 21:42、22:22 還會跑，失敗就寄信
 - [x] repo `finance-digest` → Settings → Pages：Source 選 **Deploy from a branch**，Branch 選 `main`、資料夾 `/docs`（2026-10-09 本人完成，網站已上線）
 
-### 排程任務（第 5 節，可以現在就建，不用等 publish.py）
+### 排程任務
 
-- [ ] 在 **Claude Desktop**（不是 Claude Code）建立兩個排程任務，設定見第 5 節
-- [ ] 電腦電源設定：插電時不睡眠；Chrome 與 Claude Desktop 設為開機自動啟動
-- [ ] Claude in Chrome 對 `youtube.com`、`notebook.google.com` 設為永久允許（2026-10-09 實測時沒有跳出詢問，應已允許）
+- [ ] 照 **`ToDo_ClaudeDesktop.md`** 完成 Claude Desktop 端的設定與兩個排程任務（前置、排程設定、第一次執行後的檢查都在那份檔案）
 
 ### 長期注意
 
@@ -106,25 +104,15 @@
 
 ## 5. 排程任務（本人在 Claude Desktop 建立，Claude Code 不需要做）
 
-在 Claude Desktop 開新對話（連到這台電腦），請 Claude 建兩個排程任務：
-
-| 項目 | 主排程 | 補跑 |
-|---|---|---|
-| 名稱 | 財經摘要 每日 | 財經摘要 補跑 |
-| 時間 | 每天 21:42（台灣時間） | 每天 22:22 |
-| 指令 | 讀 `D:\Repo\finance-digest\RUNBOOK.md`，從第 0 步照順序做到最後 | 同左（RUNBOOK 第 0 步會判斷當天已完成就結束） |
-| 需要這台電腦 | 開 | 開 |
-| 核准方式 | 自動核准 | 自動核准 |
-
-- 週六、休市日不用另外設定，RUNBOOK 第 0 步會判斷。
-- `publish.py` 完成前排程照樣跑，第 6 步會略過，只產報告。
-- [ ] 第一次排程執行後檢查 `logs/`、`reports/`、`processed.json` → verify: 連續 7 天沒有人工介入、每天都有明確狀態
+設定、待辦與第一次執行後的檢查都移到 **`ToDo_ClaudeDesktop.md`**（2026-10-09 本人要求另立一份，避免和這裡重複，這裡不再列項目）。
 
 ## 6. 改善項目（不急）
 
 - [ ] `tools/yt_discover.js` 的 `RULES` 與 `config/channels.yaml` 是兩份手寫資料，加一個檢查（pytest 讀 yaml 與 js 比對 inc／exc／min／weekend_only／publish_weekdays）→ verify: 改一邊不改另一邊時測試失敗
 - [ ] `config/twse_holidays.json` 只到 2026 年；年底前抓 2027 年的證交所休市日期表（`https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule`）
-- [ ] `reports/2026-10-02_Fri.txt` 影片來源清單把「黃豐凱」寫成「黃風凱」（Gemini 抄錯）；本人決定要不要手改
+- [x] `reports/2026-10-02_Fri.txt` 影片來源清單把「黃豐凱」寫成「黃風凱」（Gemini 抄錯）；本人決定要不要手改（2026-10-09：改用校正表 `config/corrections.yaml` 在發布時修正，原稿不動）
+- [ ] 校正表 `config/corrections.yaml` 裡待確認的項目：元大 10/07 的「張豐進」是否為「陳豐進」→ 本人確認後拿掉該行開頭的 `#`，重發 10/07
+- [ ] 每週看一次 `python -m fd.corrections` 的人名清單，有同一人兩種寫法就加進校正表、重發受影響的期別
 - [ ] 每月檢查一次 `processed.json` 有沒有照 RUNBOOK 刪掉 30 天前的紀錄
 
 ---
@@ -141,6 +129,8 @@
 | 2026-10-09 | GitHub repo `finance-digest` 設為 public |
 | 2026-10-09 | 網站 `https://ycy1997alex.github.io/finance-digest/`，設計沿用 finance-digest-a；LINE 推播先不做，先把網站做好 |
 | 2026-10-09 | 網站寬度比照 ycy1997alex.github.io：閱讀寬度 820px，電腦版（> 768px）頁首有「滿版寬度」切換鈕，選擇記在 localStorage `fd-width`；報告頁「分析師重點」加「卡片／表格」切換，表格模式有「分析師對照」與「個股 × 分析師」兩張表（記在 `fd-anview`） |
+| 2026-10-09 | 主排程 21:42、補跑 22:22 維持；RUNBOOK 第 0 步最先建立執行中鎖檔 `logs/.running`，避免兩次執行重疊（含第 6 步發布）；第 1 步前先檢查 Chrome 帳號，指定信箱放在不進 git 的 `config/account.local.txt`；排程先用 Sonnet 5.5、Effort 中等（Claude Desktop 端待辦見 `ToDo_ClaudeDesktop.md`） |
+| 2026-10-09 | Gemini 的人名、頻道寫法不一致或聽錯，用校正表 `config/corrections.yaml` 在發布時修正（`fd/corrections.py`）：只改要發布的副本，`reports/` 原稿不改；分析師別名只改人名位置，影片來源段（YouTube 原始標題）不改 |
 | 2026-10-09 | **不做 LINE 推播**：網頁版已完全達到需要的效果，網站是唯一的發布方式。保留網站的「複製 LINE 版」按鈕（`line_short`），需要分享時本人手動貼；不建 LINE 官方帳號、不搬 `line.py` |
 | 2026-10-09 | 本人授權 Claude Code 在對話中先用 `/git-commit` 寫訊息後自行 commit 與 push（每段對話各自授權，寫進 AGENTS.md） |
 | 2026-10-09 | 報告檢查只有「標題與日期、必要章節（含影片來源）、繁中、無簡體字」擋發布；分析師區塊截斷等只印提醒（10/04 林漢偉區塊是 Gemini 漏寫，報告不改，照原文發布） |

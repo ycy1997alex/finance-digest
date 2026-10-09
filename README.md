@@ -27,13 +27,17 @@
 ```
 finance-digest/
 ├── RUNBOOK.md              排程任務每天照做的步驟
+├── ToDo.md                 計畫、待辦、決策紀錄
+├── ToDo_ClaudeDesktop.md   Claude Desktop 端（排程任務）的待辦
 ├── prompts/提示詞.txt       Gemini Notebook 用的提示詞原稿（筆記本裡是它的貼上文字來源）
 ├── tools/
 │   ├── yt_discover.js      在 youtube.com 分頁執行：找新影片、套篩選規則、分配到各報告
 │   └── notebook_run.js     在筆記本分頁執行：換影片來源、送指令、等生成、讀出報告
 ├── config/
 │   ├── channels.yaml       頻道與篩選規則
-│   └── twse_holidays.json  證交所休市日期表
+│   ├── twse_holidays.json  證交所休市日期表
+│   ├── corrections.yaml    校正表：Gemini 寫錯或寫法不一的人名、頻道、用詞，發布時修正
+│   └── account.local.txt   指定的 Google 帳號（本機檔案，不進 git）
 ├── data/
 │   ├── processed.json      已處理影片、待補影片、每次執行紀錄
 │   └── reports/            加密後的報告資料 YYYY-MM-DD.json.enc（進 git）
@@ -46,6 +50,7 @@ finance-digest/
 │   ├── crypto.py           PBKDF2 + AES-GCM，與瀏覽器 WebCrypto 相容
 │   ├── guard.py            確認 docs/、data/ 只有密文
 │   ├── check.py            報告格式檢查
+│   ├── corrections.py      套用校正表；python -m fd.corrections 列出校正結果與人名清單
 │   └── site_template/      網站本體 index.html
 ├── docs/                   GitHub Pages 網站（全部是密文，publish.py 產生）
 └── tests/                  pytest

@@ -3,7 +3,7 @@
 台灣財經 YouTube 節目每日摘要：Claude Desktop 排程任務用 Claude in Chrome 操作 YouTube 與 Gemini Notebook，產出每日綜合報告，存到 `reports/`，再由 `publish.py` 發布到加密網站。網站是唯一的發布目的地，不做 LINE 推播。給所有 AI agent 的專案規則；`CLAUDE.md` 只匯入本檔，規則只改這裡。
 
 - 每日流程的唯一依據是 `RUNBOOK.md`。排程任務只做「讀 RUNBOOK.md 並照做」；流程要改，改 RUNBOOK.md 與 `tools/`，不改排程任務本身。
-- 計畫、待辦與決策紀錄在 `ToDo.md`（唯一來源）：完成一項就打勾並寫上驗證結果與日期；「本人待辦」只有本人說完成才打勾。
+- 計畫、待辦與決策紀錄在 `ToDo.md`（唯一來源）：完成一項就打勾並寫上驗證結果與日期；「本人待辦」只有本人說完成才打勾。Claude Desktop 端（排程任務與本機設定）的待辦另放在 `ToDo_ClaudeDesktop.md`，不在 `ToDo.md` 重複列。
 - repo 是 public：報告明文（`reports/*.txt`）不進 git，網站上只放加密版。
 - 專案背景、目錄與和舊專案 `D:\Repo\finance-digest-a` 的差別見 `README.md`。
 - `RUNBOOK.md`、`README.md`、報告與使用者看得到的文字用臺灣繁體中文；程式識別字、檔名與 commit message 用英文。
@@ -28,6 +28,8 @@
 - 網址 https://ycy1997alex.github.io/finance-digest/ ：本 repo 的 GitHub Pages，來源 `main` 分支的 `/docs`，不用 GitHub Actions。
 - 設計沿用 `D:\Repo\finance-digest-a` 的網站（密碼解鎖頁 + 單頁應用：最新一期、封存月曆、追蹤），模板在 `fd/site_template/index.html`；改版以 -a 的設計為準，不另起爐灶。
 - 寬度比照 `D:\Repo\ycy1997alex.github.io`：閱讀寬度 820px（CSS 變數 `--page-w`），電腦版（> 768px）可切換滿版（`html.layout-wide`），手機版不顯示切換鈕。報告頁的分析師重點有「卡片／表格」兩種檢視。
+- 校正表 `config/corrections.yaml`（`fd/corrections.py`）：Gemini 聽錯或寫法不一致的人名、頻道、用詞，在發布時修正，只改要發布的副本，`reports/` 原稿不改。分析師別名只改人名的位置，不動頻道名與影片來源段。改了校正表要用 `--republish` 重發受影響的期別。
+- 指定的 Google 帳號（RUNBOOK「帳號檢查」）寫在 `config/account.local.txt`，不進 git；信箱不寫進任何會 commit 的檔案或 log。
 - 改模板後要在 390px 寬度確認沒有橫向溢出（表格只能在 `.tbl-wrap` 裡捲動），做法見下方「本機預覽網站」。
 - 全站加密：密碼是使用者環境變數 `SITE_PASSWORD`；`docs/` 與 `data/` 只能有密文與 `fd/guard.py` 白名單上的檔案。
 - 程式：`publish.py`（命令列與發布流程）＋ `fd/`（`render` 解析報告、`website` 產生 `docs/`、`crypto`、`guard`、`check`），測試在 `tests/`。
@@ -52,6 +54,7 @@ $env:PYTHONIOENCODING = "utf-8"
 & $py publish.py reports\YYYY-MM-DD_EEE.txt     # 發布到網站：檢查 → 加密 → 重建 docs\ → guard → commit／push → 等上線；重跑不會重複 commit
 & $py publish.py reports\YYYY-MM-DD_EEE.txt --no-push     # 只更新本機 docs\ 與 data\reports\，不碰 git
 & $py publish.py reports\YYYY-MM-DD_EEE.txt --republish   # 覆寫已發布的這一期（網站顯示更新時間）
+& $py -m fd.corrections                 # 列出校正表會改到每份報告的哪些地方，以及校正後的人名清單（找新的別名）
 & $py -m pytest -q                      # 測試（不會執行真的 git 或連網）
 ```
 
