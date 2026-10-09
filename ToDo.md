@@ -11,7 +11,7 @@
 
 - 每日流程第 0～5 步已實測可行：Claude in Chrome 取片（`tools/yt_discover.js`）→ Gemini Notebook 產報告（`tools/notebook_run.js`）→ 本機接收器存檔（`tools/receive_server.py`）。
 - 已補跑 10/1～10/8 共 7 份報告，存在 `reports/`（全部完整）；狀態在 `data/processed.json`，過程在 `logs/2026-10-09_backfill.log`。
-- 第 6 步「發布」：`publish.py` 與加密網站已完成並在本機驗證（2026-10-09），7 期已推上 GitHub 的 `docs/`；等 GitHub Pages 設定後上線。網站是唯一的發布方式，不做 LINE 推播（2026-10-09 本人決定）。
+- 第 6 步「發布」：`publish.py` 與加密網站已完成並在本機驗證（2026-10-09），10/1～10/8 共 7 期已在 https://ycy1997alex.github.io/finance-digest/ 上線。網站是唯一的發布方式，不做 LINE 推播（2026-10-09 本人決定）。
 - GitHub **public** repo `ycy1997alex/finance-digest` 已有第一次 commit 並 push（2026-10-09）。
 - 舊專案 `D:\Repo\finance-digest-a`（GitHub Actions + Gemini API）因 API 免費層額度與 503 失敗而放棄，但它的**網站（加密靜態頁）已寫好並測過**，本專案直接移植，不重新設計；它的 LINE 推播程式不沿用。
 
@@ -24,7 +24,7 @@
 - [ ] 確認 D1～D4（下一節）的建議做法，或告訴 Claude Code 要改哪一項
 - [x] 讓 Claude Code 做第一次 commit 與 push（第 1 節）時，在對話中明確授權（2026-10-09 本人授權）
 - [ ] 停用舊專案的排程：GitHub → `finance-digest-a` → Actions → daily → 右上「⋯」→ **Disable workflow**。不停的話它每天 21:42、22:22 還會跑，失敗就寄信
-- [ ] repo `finance-digest` → Settings → Pages：Source 選 **Deploy from a branch**，Branch 選 `main`、資料夾 `/docs`（`docs/` 已在 2026-10-09 推上去，7 期都在；設好後網站才會上線，目前 404）
+- [x] repo `finance-digest` → Settings → Pages：Source 選 **Deploy from a branch**，Branch 選 `main`、資料夾 `/docs`（2026-10-09 本人完成，網站已上線）
 
 ### 排程任務（第 5 節，可以現在就建，不用等 publish.py）
 
@@ -98,7 +98,7 @@
 - [x] 實作上述流程 → verify: 同一份報告連跑兩次，第二次不重複 commit（2026-10-09：`tests/test_publish.py` 用假的 git 驗證；真的 push 要等 GitHub Pages 開好再驗。為此改了 -a 的做法：keyring 不再每次重新包、`index.enc` 內容沒變不重寫，否則每跑一次就多一個 commit）
 - [x] 錯誤處理：任何一步失敗都要寫清楚哪一步、印出原因、非零結束碼；token 與密碼不出現在任何輸出 → verify: 故意不設 `SITE_PASSWORD`、故意給壞掉的報告，各跑一次（2026-10-09：兩者都印「第 N 步（…）失敗：原因」、結束碼 1；密碼錯誤的訊息不含密碼）
 - [ ] 更新 `RUNBOOK.md` 第 6 步（實際指令、結束碼代表什麼、失敗時怎麼記 log）與 `AGENTS.md` 常用指令、自動 commit 的例外 → verify: 本人讀過（2026-10-09 已更新，等本人讀）
-- [ ] 補發布 10/1～10/8 → verify: `https://ycy1997alex.github.io/finance-digest/` 輸入密碼看得到 7 期；手機開三篇不同長度的報告不爆版
+- [x] 補發布 10/1～10/8 → verify: `https://ycy1997alex.github.io/finance-digest/` 輸入密碼看得到 7 期；手機開三篇不同長度的報告不爆版（2026-10-09：Pages 開好後 7 份各跑一次 `publish.py`，都確認上線且「沒有變動，不 commit」，`processed.json` 寫回 `site_published`；本人手機實測發現分析師頁頻道名太長會橫向溢出，已修，390px 寬度下 52 位分析師頁與 7 期報告都無溢出）
 
 ## 4. LINE 推播（已取消）
 
@@ -140,6 +140,7 @@
 | 2026-10-09 | 報告從瀏覽器存到本機用 `tools/receive_server.py`（127.0.0.1:8765，閒置 10 分鐘自動結束） |
 | 2026-10-09 | GitHub repo `finance-digest` 設為 public |
 | 2026-10-09 | 網站 `https://ycy1997alex.github.io/finance-digest/`，設計沿用 finance-digest-a；LINE 推播先不做，先把網站做好 |
+| 2026-10-09 | 網站寬度比照 ycy1997alex.github.io：閱讀寬度 820px，電腦版（> 768px）頁首有「滿版寬度」切換鈕，選擇記在 localStorage `fd-width`；報告頁「分析師重點」加「卡片／表格」切換，表格模式有「分析師對照」與「個股 × 分析師」兩張表（記在 `fd-anview`） |
 | 2026-10-09 | **不做 LINE 推播**：網頁版已完全達到需要的效果，網站是唯一的發布方式。保留網站的「複製 LINE 版」按鈕（`line_short`），需要分享時本人手動貼；不建 LINE 官方帳號、不搬 `line.py` |
 | 2026-10-09 | 本人授權 Claude Code 在對話中先用 `/git-commit` 寫訊息後自行 commit 與 push（每段對話各自授權，寫進 AGENTS.md） |
 | 2026-10-09 | 報告檢查只有「標題與日期、必要章節（含影片來源）、繁中、無簡體字」擋發布；分析師區塊截斷等只印提醒（10/04 林漢偉區塊是 Gemini 漏寫，報告不改，照原文發布） |

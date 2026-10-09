@@ -27,6 +27,8 @@
 
 - 網址 https://ycy1997alex.github.io/finance-digest/ ：本 repo 的 GitHub Pages，來源 `main` 分支的 `/docs`，不用 GitHub Actions。
 - 設計沿用 `D:\Repo\finance-digest-a` 的網站（密碼解鎖頁 + 單頁應用：最新一期、封存月曆、追蹤），模板在 `fd/site_template/index.html`；改版以 -a 的設計為準，不另起爐灶。
+- 寬度比照 `D:\Repo\ycy1997alex.github.io`：閱讀寬度 820px（CSS 變數 `--page-w`），電腦版（> 768px）可切換滿版（`html.layout-wide`），手機版不顯示切換鈕。報告頁的分析師重點有「卡片／表格」兩種檢視。
+- 改模板後要在 390px 寬度確認沒有橫向溢出（表格只能在 `.tbl-wrap` 裡捲動），做法見下方「本機預覽網站」。
 - 全站加密：密碼是使用者環境變數 `SITE_PASSWORD`；`docs/` 與 `data/` 只能有密文與 `fd/guard.py` 白名單上的檔案。
 - 程式：`publish.py`（命令列與發布流程）＋ `fd/`（`render` 解析報告、`website` 產生 `docs/`、`crypto`、`guard`、`check`），測試在 `tests/`。
 - 不做 LINE 推播（2026-10-09 本人決定：網站已達到需要的效果）。不要再加 LINE Messaging API、官方帳號或任何推播管道；要分享時由本人用網站上的「複製 LINE 版」按鈕手動貼（內容是報告資料裡的 `line_short`，由 `fd/render.py` 產生，要保留）。

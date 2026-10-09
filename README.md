@@ -56,6 +56,7 @@ finance-digest/
 - 網址 https://ycy1997alex.github.io/finance-digest/ ，GitHub Pages 從 `main` 分支的 `/docs` 部署，本機 push 後自動上線。
 - 打開時輸入密碼（使用者環境變數 `SITE_PASSWORD`）才看得到內容：瀏覽器用密碼解開 `docs/data/keyring.json` 裡的主金鑰，再解開各期報告。repo 與網站上都只有密文，`noindex`。
 - 每期固定網址 `…/finance-digest/YYYY-MM-DD/`，會轉到該期頁面。
+- 版面寬度 820px；電腦版頁首右側有「滿版寬度」按鈕。報告頁的「分析師重點」可切換卡片或表格（分析師對照表、個股 × 分析師矩陣）。字級、配色、寬度與檢視方式只記在各自的瀏覽器裡。
 - 換密碼：`fd.website.rotate_key(data_dir, docs_dir, 舊密碼, 新密碼)` 換新的主金鑰並重新加密全部檔案（只重新包主金鑰擋不住知道舊密碼的人，因為 git 歷史裡還有舊 keyring），然後改 `SITE_PASSWORD`、commit 並 push。
 
 ## 安裝與執行
