@@ -4,7 +4,7 @@
 
 依序：檢查報告 → 從 data/processed.json 取影片清單 → 組報告資料 → 加密存到 data/reports/ →
 重建 docs/ → guard → git commit／push（只有 docs、data/reports、data/processed.json）→
-等網站上線 → 寫回 processed.json。LINE 推播尚未建置（ToDo.md 第 4 節）。
+等網站上線 → 寫回 processed.json。網站是唯一的發布目的地，不推 LINE（2026-10-09 本人決定）。
 
 可重複執行：已加密存檔的報告與已發布的期別不重寫（--republish 才覆寫），
 docs/ 與 data/reports/ 沒有變動就不 commit。
@@ -257,7 +257,6 @@ def publish(path: Path, password: str | None, push: bool = True, republish: bool
     except TimeoutError as ex:
         raise StepError("第 8 步（確認上線）", str(ex), 2) from ex
     log(f"第 8 步：已上線 {SITE_URL}{day}/")
-    log("第 9 步：LINE 推播尚未建置，略過")
 
     run = find_run(state, stem)
     now = datetime.now(TPE).isoformat(timespec="seconds")
@@ -267,9 +266,8 @@ def publish(path: Path, password: str | None, push: bool = True, republish: bool
         run["republished_at"] = now
     else:
         return 0
-    run.setdefault("line_pushed", False)
     save_state(state_path, state)
-    log("第 10 步：已寫回 processed.json")
+    log("第 9 步：已寫回 processed.json")
     return 0
 
 

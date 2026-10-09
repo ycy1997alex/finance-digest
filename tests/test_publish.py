@@ -87,7 +87,7 @@ def test_publish_twice_commits_once_and_records_state(tmp_path):
     commit = next(c for c in git.calls if c[0] == "commit")
     assert commit[1:3] == ("-m", "publish: 2026-10-03") and commit[4:] == publish.PUBLISH_PATHS   # 只 commit 這三個路徑
     rec = state(tmp_path)["runs"][-1]
-    assert rec["site_published"] is True and rec["published_at"] and rec["line_pushed"] is False
+    assert rec["site_published"] is True and rec["published_at"]
     saved = (tmp_path / "data/processed.json").read_text(encoding="utf-8")
 
     code, logs = run(tmp_path, path, git)
