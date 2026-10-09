@@ -1,0 +1,14 @@
+2026-10-09 手動補跑 10/1～10/8（Claude Desktop 對話中實測，非排程）
+- 取片：tools/yt_discover.js 的作法（YouTube browse API＋觀看頁），19 頻道共 228 支候選
+- 休市／不出報告：10/3（週六）、10/9（國慶補假）
+- 各報告納入數：10/1 9、10/2 8、10/4 10、10/5 9、10/6 11、10/7 9、10/8 10
+- 排除：理財達人秀隔天早上的切段（too_short）、兆華艾綸說切段、先探非週五（weekday_filtered）、游庭皓【會員專屬】與李兆華週報隱藏版（members_only）
+- 10/4：先探 kW0wSz7zOZE 匯入 Gemini Notebook 失敗，報告仍列在來源清單（舊版腳本尚未過濾），已在報告末尾註記
+- 10/2：Gemini 回覆在「翁士峻」區塊中斷，報告不完整，待重跑
+- 10/5：第一次 runReport 在刪除來源步驟出錯（失敗來源的選單不同），修正 clearChat 後重跑成功
+- 存檔：報告暫存在 notebook.google.com 的 localStorage，再由 tools/receive_server.py（127.0.0.1:8765）接收寫入 reports/；第一次 Chrome 需允許「存取本機裝置」權限
+- 11:30 左右 Gemini 用量達上限
+- 發布（publish.py）：尚未建立，未發布
+- 17:50 重跑 10/2：一次完成，報告完整（含影片來源段），覆蓋原本中斷的版本
+- 17:55 重跑 10/4：先探 kW0wSz7zOZE 仍匯入失敗，這次已從來源對照表移除，報告以其餘 9 支產出，末尾註記未讀取
+- 18:05 查證先探 kW0wSz7zOZE 為會員專屬影片（無法播放、無字幕），改記 members_only；yt_discover.js 改用觀看頁徽章判斷會員專屬

@@ -1,0 +1,17 @@
+# 報告明文（repo 是 public；網站上只放加密版，見 ToDo.md D1）
+reports/*.txt
+
+# 金鑰與本機設定
+.env
+*.key
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# 編輯器與系統
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

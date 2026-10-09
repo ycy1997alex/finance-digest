@@ -1,0 +1,14 @@
+# 不打包安裝：publish.py 直接 import 同目錄的 fd/。這裡只放依賴說明與 pytest 設定。
+[project]
+name = "finance-digest"
+version = "0.1.0"
+description = "台灣財經 YouTube 節目每日摘要：報告發布到加密網站"
+requires-python = ">=3.13"
+dependencies = ["cryptography", "requests"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
