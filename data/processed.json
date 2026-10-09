@@ -610,7 +610,8 @@
       "pending": 0,
       "status": "complete",
       "site_published": true,
-      "published_at": "2026-10-09T21:04:46+08:00"
+      "published_at": "2026-10-09T21:04:46+08:00",
+      "republished_at": "2026-10-09T22:19:42+08:00"
     },
     {
       "report": "2026-10-08_Thu",
