@@ -130,6 +130,8 @@
 | 2026-10-09 | 網站 `https://ycy1997alex.github.io/finance-digest/`，設計沿用 finance-digest-a；LINE 推播先不做，先把網站做好 |
 | 2026-10-09 | 網站寬度比照 ycy1997alex.github.io：閱讀寬度 820px，電腦版（> 768px）頁首有「滿版寬度」切換鈕，選擇記在 localStorage `fd-width`；報告頁「分析師重點」加「卡片／表格」切換，表格模式有「分析師對照」與「個股 × 分析師」兩張表（記在 `fd-anview`） |
 | 2026-10-09 | 主排程 21:42、補跑 22:22 維持；RUNBOOK 第 0 步最先建立執行中鎖檔 `logs/.running`，避免兩次執行重疊（含第 6 步發布）；第 1 步前先檢查 Chrome 帳號，指定信箱放在不進 git 的 `config/account.local.txt`；排程先用 Sonnet 5.5、Effort 中等（Claude Desktop 端待辦見 `ToDo_ClaudeDesktop.md`） |
+| 2026-10-09 | 補跑改為 **22:44**（原 22:22），給主排程多一點時間跑完；鎖檔逾時同時改為 55 分鐘，21:42 那次當掉留下的鎖檔不會擋住 22:44 補跑 |
+| 2026-10-09 | 校正後的稿另存在 `corrected_reports/`（與 `reports/` 同檔名，本機看正確內容用；明文不進 git）：`publish.py` 發布時寫入，`python -m fd.corrections` 依目前的校正表重產全部 |
 | 2026-10-09 | Gemini 的人名、頻道寫法不一致或聽錯，用校正表 `config/corrections.yaml` 在發布時修正（`fd/corrections.py`）：只改要發布的副本，`reports/` 原稿不改；分析師別名只改人名位置，影片來源段（YouTube 原始標題）不改 |
 | 2026-10-09 | **不做 LINE 推播**：網頁版已完全達到需要的效果，網站是唯一的發布方式。保留網站的「複製 LINE 版」按鈕（`line_short`），需要分享時本人手動貼；不建 LINE 官方帳號、不搬 `line.py` |
 | 2026-10-09 | 本人授權 Claude Code 在對話中先用 `/git-commit` 寫訊息後自行 commit 與 push（每段對話各自授權，寫進 AGENTS.md） |

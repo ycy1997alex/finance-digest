@@ -17,16 +17,16 @@
 | 筆記本固定來源（不可刪） | 「台灣財經 YouTube 影片摘要指令」（提示詞）、TWSE ISIN strMode=2／4／5 三個網址 |
 | 報告檔名 | `reports/YYYY-MM-DD_EEE.txt`（例：`2026-10-12_Mon.txt`，星期用英文三字母縮寫） |
 | 執行紀錄 | `logs/YYYY-MM-DD_EEE.log` |
-| 主排程／補跑 | 21:42／22:22（台灣時間） |
+| 主排程／補跑 | 21:42／22:44（台灣時間） |
 
 ## 第 0 步：決定今天要不要出報告
 
 1. 報告日期 = 今天（台灣時間）。若執行時間在清晨 06:00 前，報告日期算前一天。
-2. 執行中鎖檔（最先做，避免 21:42 那次還沒跑完、22:22 又同時開跑，連第 6 步發布也不能重疊）：
-   - `logs/.running` 存在、而且裡面的開始時間在 90 分鐘內 → 另一次執行還在跑：寫 log「前一次執行尚未結束，略過」後結束，**不要刪它**。
-   - 不存在，或是超過 90 分鐘的殘留 → 寫入（覆蓋）`logs/.running`，內容一行：`報告日期 開始時間`（例：`2026-10-12 2026-10-12T21:42:10+08:00`）。
+2. 執行中鎖檔（最先做，避免 21:42 那次還沒跑完、22:44 又同時開跑，連第 6 步發布也不能重疊）：
+   - `logs/.running` 存在、而且裡面的開始時間在 55 分鐘內 → 另一次執行還在跑：寫 log「前一次執行尚未結束，略過」後結束，**不要刪它**。
+   - 不存在，或是超過 55 分鐘的殘留 → 寫入（覆蓋）`logs/.running`，內容一行：`報告日期 開始時間`（例：`2026-10-12 2026-10-12T21:42:10+08:00`）。正常一次執行最多約 40 分鐘；21:42 那次中途當掉留下的鎖檔，到 22:44 已超過 55 分鐘，補跑會接手，不會被它擋住。
    - 從這裡開始，不論成功、失敗、略過或中途結束，最後都要刪掉 `logs/.running`（第 7 步、「出錯時的原則」）。
-3. 讀 `data/processed.json`。如果 `runs` 裡已有這個報告日期、狀態是 `complete` 或 `partial` 的紀錄，代表今天已經完成：寫一行 log「已完成，略過」、刪掉鎖檔後結束。（22:22 補跑靠這條避免重做。）例外：那筆紀錄沒有 `site_published: true` 時，直接跳到第 6 步補發布。
+3. 讀 `data/processed.json`。如果 `runs` 裡已有這個報告日期、狀態是 `complete` 或 `partial` 的紀錄，代表今天已經完成：寫一行 log「已完成，略過」、刪掉鎖檔後結束。（22:44 補跑靠這條避免重做。）例外：那筆紀錄沒有 `site_published: true` 時，直接跳到第 6 步補發布。
 4. 判斷版本：
    - 週日 → **週末版**（weekend）
    - 週六 → 不出報告，寫 log、刪掉鎖檔後結束
@@ -131,7 +131,7 @@ Gemini Notebook 筆記本只在指定的 Google 帳號底下，帳號不對後�
    & C:\Users\Alex\anaconda3\envs\finance-digest\python.exe publish.py reports\YYYY-MM-DD_EEE.txt
    ```
 
-2. 腳本會依序：檢查報告 → 從 `processed.json` 取影片連結 → 加密存到 `data/reports/` → 重建 `docs/` → 確認只有密文 → commit `publish: YYYY-MM-DD` 並 push → 等網站 https://ycy1997alex.github.io/finance-digest/ 上線 → 在 `runs` 這筆紀錄寫回 `site_published`、`published_at`。
+2. 腳本會依序：檢查報告 → 套用校正表 `config/corrections.yaml`，校正稿存到 `corrected_reports/`（`reports/` 原稿不動）→ 從 `processed.json` 取影片連結 → 加密存到 `data/reports/` → 重建 `docs/` → 確認只有密文 → commit `publish: YYYY-MM-DD` 並 push → 等網站 https://ycy1997alex.github.io/finance-digest/ 上線 → 在 `runs` 這筆紀錄寫回 `site_published`、`published_at`。
 3. 依結束碼處理：
 
    | 結束碼 | 意思 | 怎麼做 |
@@ -141,7 +141,7 @@ Gemini Notebook 筆記本只在指定的 Google 帳號底下，帳號不對後�
    | 2 | git 推送或上線確認失敗，本機檔案已更新 | 等 1 分鐘用同一個指令重跑一次；仍是 2 就 log 記「發布失敗」與錯誤那一行 |
 
 4. 輸出的「提醒」行（例如分析師區塊可能被截斷、影片對不上）不擋發布，原樣抄進 log。
-5. 腳本可以重複執行：同一份報告第二次執行不會再 commit。22:22 補跑若第 0 步判斷今天已完成，但 `runs` 這筆還沒有 `site_published: true`，就只做這一步。
+5. 腳本可以重複執行：同一份報告第二次執行不會再 commit。22:44 補跑若第 0 步判斷今天已完成，但 `runs` 這筆還沒有 `site_published: true`，就只做這一步。
 
 ## 第 7 步：紀錄與通知
 
@@ -171,4 +171,5 @@ Gemini Notebook 筆記本只在指定的 Google 帳號底下，帳號不對後�
 
 - 2026-10-09：建立草稿；同日依實測改寫第 1～5 步，新增 `tools/yt_discover.js`、`tools/notebook_run.js`。
 - 2026-10-09：第 6 步改為執行 `publish.py`；同日決定只發布網站，不做 LINE 推播。
+- 2026-10-09：補跑改為 22:44，鎖檔逾時改 55 分鐘；第 6 步會另存校正稿到 `corrected_reports/`。
 - 2026-10-09：第 0 步加執行中鎖檔 `logs/.running`；新增「帳號檢查」（指定信箱在本機的 `config/account.local.txt`）。

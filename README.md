@@ -2,7 +2,7 @@
 
 台灣財經 YouTube 節目每日摘要，改用 **Claude Desktop 排程任務 + Claude in Chrome + Gemini Notebook（原 NotebookLM）** 的路線。
 
-每天 21:42 由排程任務讀 `RUNBOOK.md` 照做：用 Chrome 找出各頻道的新影片 → 貼進固定的 Gemini Notebook 筆記本 → 用提示詞檔產生當日綜合報告 → 存成 `reports/YYYY-MM-DD_EEE.txt` → 執行 `publish.py` 發布到加密網站 https://ycy1997alex.github.io/finance-digest/ 。網站是唯一的發布方式，不做 LINE 推播。22:22 補跑，今天已完成就直接結束。
+每天 21:42 由排程任務讀 `RUNBOOK.md` 照做：用 Chrome 找出各頻道的新影片 → 貼進固定的 Gemini Notebook 筆記本 → 用提示詞檔產生當日綜合報告 → 存成 `reports/YYYY-MM-DD_EEE.txt` → 執行 `publish.py` 發布到加密網站 https://ycy1997alex.github.io/finance-digest/ 。網站是唯一的發布方式，不做 LINE 推播。22:44 補跑，今天已完成就直接結束。
 
 ## 和 finance-digest-a 的差別
 
@@ -41,7 +41,8 @@ finance-digest/
 ├── data/
 │   ├── processed.json      已處理影片、待補影片、每次執行紀錄
 │   └── reports/            加密後的報告資料 YYYY-MM-DD.json.enc（進 git）
-├── reports/                每日報告明文 YYYY-MM-DD_EEE.txt（不進 git）
+├── reports/                每日報告原稿 YYYY-MM-DD_EEE.txt（Gemini 的原始輸出，一字不改；不進 git）
+├── corrected_reports/      校正後的稿，同檔名；本機要看正確內容就開這裡（程式產生，不手改；不進 git）
 ├── logs/                   每次執行的紀錄
 ├── publish.py              發布一份報告到網站（RUNBOOK 第 6 步）
 ├── fd/                     publish.py 用的模組
@@ -50,7 +51,7 @@ finance-digest/
 │   ├── crypto.py           PBKDF2 + AES-GCM，與瀏覽器 WebCrypto 相容
 │   ├── guard.py            確認 docs/、data/ 只有密文
 │   ├── check.py            報告格式檢查
-│   ├── corrections.py      套用校正表；python -m fd.corrections 列出校正結果與人名清單
+│   ├── corrections.py      套用校正表；python -m fd.corrections 重產校正稿並列出人名清單
 │   └── site_template/      網站本體 index.html
 ├── docs/                   GitHub Pages 網站（全部是密文，publish.py 產生）
 └── tests/                  pytest
