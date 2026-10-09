@@ -1,6 +1,6 @@
 import pytest
 
-from fd.corrections import apply, load
+from fd.corrections import apply, load, write_corrected
 from fd.render import parse_report
 
 TABLE = {
@@ -60,6 +60,15 @@ def test_load_rejects_bad_table(tmp_path):
     p.write_text("names:\n  a: b\n", encoding="utf-8")
     with pytest.raises(ValueError):
         load(p)
+
+
+def test_write_corrected_keeps_name_and_skips_unchanged(tmp_path):
+    original = tmp_path / "reports/2026-10-02_Fri.txt"
+    out = write_corrected(original, "校正後\n", tmp_path / "corrected_reports")
+    assert out.name == original.name and out.read_text(encoding="utf-8") == "校正後\n"
+    before = out.stat().st_mtime_ns
+    write_corrected(original, "校正後\n", tmp_path / "corrected_reports")
+    assert out.stat().st_mtime_ns == before                              # 內容沒變就不重寫
 
 
 def test_repo_table_loads():

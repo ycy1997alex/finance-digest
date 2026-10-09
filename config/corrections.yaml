@@ -1,7 +1,7 @@
 # 校正表：修正 Gemini 聽錯或寫法不一致的人名、頻道與用詞（fd/corrections.py）。
-# 只套用在發布到網站的副本，reports/ 原稿不改。改完要重發受影響的期別：
-#   python publish.py reports\YYYY-MM-DD_EEE.txt --republish
-# 找新的別名：python -m fd.corrections（列出每份報告會被改的地方，與校正後的人名清單）
+# reports/ 是原稿不改；校正後的稿在 corrected_reports/（同檔名），網站也用校正稿。改完這個檔：
+#   python -m fd.corrections                                       重產 corrected_reports/，列出改到的地方與人名清單
+#   python publish.py reports\YYYY-MM-DD_EEE.txt --republish       重發受影響的期別到網站
 # 寫法：「原本的寫法: 正確寫法」。排程執行時不修改本檔（AGENTS.md）。
 
 # 全文逐字替換：只放不會誤傷其他字的錯字

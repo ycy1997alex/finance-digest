@@ -222,6 +222,8 @@ def publish(path: Path, password: str | None, push: bool = True, republish: bool
         raise StepError("第 3 步（校正表）", str(ex), 1) from ex
     for f in fixed:
         log(f"校正：{f}")
+    corrections.write_corrected(path, text, root / "corrected_reports")
+    log(f"第 3 步：校正稿存到 corrected_reports/{path.name}")
     if not password:
         raise StepError("第 4 步（加密）", "沒有設定環境變數 SITE_PASSWORD", 1)
     state_path = root / "data/processed.json"

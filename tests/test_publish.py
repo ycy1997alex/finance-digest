@@ -132,6 +132,8 @@ def test_corrections_reach_the_site_but_not_the_original(tmp_path):
     assert code == 0 and any("王大明 → 王大銘" in l for l in logs)
     assert r["parsed"]["analysts"][0]["name"] == "王大銘" and "王大明" not in r["text"]
     assert "王大明" in path.read_text(encoding="utf-8")                  # reports/ 原稿不改
+    fixed = (tmp_path / "corrected_reports/2026-10-03_Sat.txt").read_text(encoding="utf-8")
+    assert "👤 王大銘｜" in fixed and "王大明" not in fixed               # 本機看的校正稿
 
 
 def test_bad_corrections_table_stops_before_publishing(tmp_path):

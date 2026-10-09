@@ -1,5 +1,6 @@
 # 報告明文（repo 是 public；網站上只放加密版，見 ToDo.md D1）
 reports/*.txt
+corrected_reports/
 
 # 金鑰與本機設定（指定 Google 帳號放在 config/account.local.txt，repo 是 public 不能公開信箱）
 .env
