@@ -337,6 +337,9 @@ a.day.cur{outline:2px solid var(--accent);outline-offset:1px}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:16px}
 @media (min-width:760px){.grid2{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:start}}
 .rank{margin:0;padding:0;list-style:none}
+.rank:not(.rank-open) li:nth-child(n+11){display:none}
+.rank.rank-open{overflow-y:auto}
+.rank-more{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:12px;font-size:.78rem;color:var(--muted)}
 .rank a{display:grid;grid-template-columns:1.7em 1fr auto;align-items:center;gap:3px 10px;padding:10px 0;border-top:1px solid var(--line);text-decoration:none}
 .rank li:first-child a{border-top:0;padding-top:0}
 .rank a:hover b{color:var(--accent)}
@@ -789,7 +792,7 @@ function viewTrack() {
     const ms = s.mentions.filter(x => x.date > cutoff);
     const b = ms.filter(x => sideOf(x.attitude) > 0).length, sn = ms.filter(x => sideOf(x.attitude) < 0).length;
     return { s, n: ms.length, b, sn, neu: ms.length - b - sn };
-  }).filter(x => x.n).sort((p, q) => q.n - p.n || q.b - p.b).slice(0, 10);
+  }).filter(x => x.n).sort((p, q) => q.n - p.n || q.b - p.b);
   const pct = (v, n) => `${(v / n * 100).toFixed(1)}%`;
   const rank = hot.map((x, i) => `<li><a href="#/stock/${encodeURIComponent(x.s.key)}">
       <span class="no">${i + 1}</span><span><b>${esc(x.s.name)}</b> ${codeHtml(x.s.code)}</span><span class="cnt">${x.n} 次</span>
@@ -807,7 +810,8 @@ function viewTrack() {
     <div class="search"><div class="box">${ICON.search}<input id="q" type="search" placeholder="搜尋股名、代號或分析師，例如 台積電、2330" autocomplete="off" enterkeyhint="search" aria-label="搜尋個股或分析師"></div>
       <div class="sugg" id="sugg" hidden></div></div>
     <div class="grid2">
-      <section class="card"><h2 class="sec-h">🔥 熱門個股<span class="aside">依被提及次數</span></h2><ol class="rank">${rank || '<li class="empty">近 30 天沒有個股紀錄</li>'}</ol></section>
+      <section class="card"><h2 class="sec-h">🔥 熱門個股<span class="aside">依被提及次數</span></h2><ol class="rank">${rank || '<li class="empty">近 30 天沒有個股紀錄</li>'}</ol>
+        ${hot.length > 10 ? `<div class="rank-more"><button class="btn sm" data-act="rank-more" aria-expanded="false">顯示更多（共 ${hot.length} 檔）</button><span hidden>清單內可上下捲動</span></div>` : ""}</section>
       <section class="card"><h2 class="sec-h">👤 分析師<span class="aside">小方塊＝最近 10 期態度</span></h2><div class="alist">${people}</div></section>
     </div>` };
 }
@@ -981,6 +985,14 @@ document.addEventListener("click", async e => {
   } else if (act === "width") {
     store.set("fd-width", root.classList.toggle("layout-wide") ? "wide" : "normal");
     syncWidth();
+  } else if (act === "rank-more") {
+    // 展開後清單高度固定為前 10 名的高度，其餘在清單內捲動
+    const ol = $(".rank"), open = !ol.classList.contains("rank-open");
+    if (open) { ol.style.maxHeight = ol.offsetHeight + "px"; ol.classList.add("rank-open"); }
+    else { ol.classList.remove("rank-open"); ol.style.maxHeight = ""; ol.scrollTop = 0; }
+    el.setAttribute("aria-expanded", open);
+    el.textContent = open ? "收合" : `顯示更多（共 ${ol.children.length} 檔）`;
+    el.nextElementSibling.hidden = !open;
   } else if (act === "expand-all" || act === "collapse-all") {
     $$("details.an").forEach(d => { d.open = act === "expand-all"; });
   } else if (act === "settings") {
