@@ -3,7 +3,7 @@
 //   1. 本檔整段送進 javascript_tool（定義函式）
 //   2. runReport('2026-10-12', ids, lines)   ← 不要 await，它在背景跑（javascript_tool 單次最多 45 秒）
 //      ids   = 影片 ID 陣列；lines = 「標題｜頻道全名」陣列（順序與 ids 相同）
-//   3. 每 30～60 秒查一次：JSON.stringify(JS)  → step 依序為 remove / add / ask / gen / done（或 error）
+//   3. 每 30～60 秒查一次：JSON.stringify(JS)  → step 依序為 remove / add / retry（有匯入失敗才有）/ ask / gen / done（或 error）
 //   4. done 之後報告全文在 localStorage 'fd_<日期>'；讀出方法見 RUNBOOK 第 5 步
 // 前提：視窗夠寬（約 1400px），窄版面會變成「來源／對話／工作室」分頁，textarea 找不到。
 
@@ -59,6 +59,27 @@ window.addUrls = async function (urls) {
   return urls.length;
 };
 
+// 移除一個指定標題的影片來源（重試匯入失敗的影片前用；固定來源不動）
+window.removeSource = async function (title) {
+  if (KEEP(title)) return false;
+  const it = [...document.querySelectorAll('.single-source-container')].find(e => (e.querySelector('[class*=source-title]')?.innerText || '').trim() === title);
+  if (!it) return false;
+  [...it.querySelectorAll('button')].find(b => b.getAttribute('aria-label') === '更多').click(); await sleep(600);
+  [...document.querySelectorAll('[role=menuitem]')].find(m => m.innerText.includes('移除來源')).click(); await sleep(700);
+  [...document.querySelectorAll('[role=dialog] button')].find(b => b.innerText.trim() === '刪除').click(); await sleep(1500);
+  return true;
+};
+
+// 等來源匯入完成（轉圈圈都消失，最多約 3 分鐘）
+window.waitImport = async function () {
+  await sleep(5000);
+  for (let i = 0; i < 60; i++) { if (!srcTitles().some(x => x.busy)) break; await sleep(3000); }
+  await sleep(3000);
+};
+
+// 目前匯入失敗的影片來源標題（失敗來源的標題可能是網址，也可能是影片標題）
+window.failedTitles = () => srcTitles().filter(x => x.err && !KEEP(x.t)).map(x => x.t);
+
 window.ask = async function (msg) {
   const ta = document.querySelector('textarea[aria-label="查詢方塊"]');
   ta.focus(); ta.value = msg; ta.dispatchEvent(new Event('input', {bubbles: true})); await sleep(600);
@@ -79,14 +100,26 @@ window.runReport = async function (date, ids, lines) {
   window.JS = {date, step: 'start'};
   try {
     JS.step = 'remove'; JS.removed = await removeVideos(); await clearChat();
-    JS.step = 'add'; await addUrls(ids.map(i => 'https://www.youtube.com/watch?v=' + i)); await sleep(5000);
-    for (let i = 0; i < 60; i++) { const s = srcTitles(); if (!s.some(x => x.busy)) break; await sleep(3000); }
-    await sleep(3000);
-    const s = srcTitles();
-    JS.sources = s.length;
-    JS.failed = s.filter(x => x.err && !KEEP(x.t)).map(x => x.t);
-    // 匯入失敗的影片從來源對照表拿掉（失敗來源的標題可能是網址，也可能是影片標題）
-    const bad = (i, l) => JS.failed.some(t => t.includes(ids[i]) || l.startsWith(t.slice(0, 20)));
+    JS.step = 'add'; await addUrls(ids.map(i => 'https://www.youtube.com/watch?v=' + i)); await waitImport();
+    const badIn = fails => (i, l) => fails.some(t => t.includes(ids[i]) || l.startsWith(t.slice(0, 20)));
+    // 匯入失敗的影片：移除失敗的來源，再單獨插入該網址一次（一支一支來）
+    const first = failedTitles();
+    JS.firstFailed = first;
+    if (first.length) {
+      JS.step = 'retry';
+      // 只重試對得上影片 ID 的失敗來源，而且要先成功移除舊來源，才不會重複
+      JS.retried = []; JS.unmatched = [];
+      for (const t of first) {
+        const hit = ids.filter((id, i) => badIn([t])(i, lines[i]));
+        if (hit.length !== 1) { JS.unmatched.push(t); continue; }
+        if (await removeSource(t)) JS.retried.push(hit[0]);
+      }
+      for (const id of JS.retried) { await addUrls(['https://www.youtube.com/watch?v=' + id]); await waitImport(); }
+    }
+    JS.sources = srcTitles().length;
+    JS.failed = failedTitles();
+    // 重試後仍失敗的影片從來源對照表拿掉
+    const bad = badIn(JS.failed);
     JS.failedIds = ids.filter((id, i) => bad(i, lines[i]));
     lines = lines.filter((l, i) => !bad(i, l));
     if (!lines.length) { JS.step = 'error'; JS.err = 'all_imports_failed'; return; }
