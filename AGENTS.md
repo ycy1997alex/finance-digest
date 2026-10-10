@@ -26,6 +26,7 @@
 ## 網站（2026-10-09 本人決定）
 
 - 網址 https://ycy1997alex.github.io/finance-digest/ ：本 repo 的 GitHub Pages，來源 `main` 分支的 `/docs`，不用 GitHub Actions。
+- **repo 分工（2026-10-10 本人決定方案 B，尚未實作，進度見 `ToDo.md` 第 7 節）**：程式、`data/processed.json`、log、提示詞、`config/` 等全部放私人 repo `ycy1997alex/finance-digest_private`；公開 repo `ycy1997alex/finance-digest` 只放網站（`docs/`，只有密文），GitHub Pages 設定與網址不變。之前推上公開 repo 的提示詞與頻道設定已公開，本人接受（之後會改版）。實作完成前，發布流程照舊推到公開 repo。
 - 設計沿用 `D:\Repo\finance-digest-a` 的網站（密碼解鎖頁 + 單頁應用：最新一期、封存月曆、追蹤），模板在 `fd/site_template/index.html`；改版以 -a 的設計為準，不另起爐灶。
 - 寬度比照 `D:\Repo\ycy1997alex.github.io`：閱讀寬度 820px（CSS 變數 `--page-w`），電腦版（> 768px）可切換滿版（`html.layout-wide`），手機版不顯示切換鈕。報告頁的分析師重點有「卡片／表格」兩種檢視。
 - 校正表 `config/corrections.yaml`（`fd/corrections.py`）：Gemini 聽錯或寫法不一致的人名、頻道、用詞，在發布時修正：`reports/` 是原稿，`corrected_reports/`（同檔名）是校正後的稿，網站用校正稿。分析師別名只改人名的位置，不動頻道名與影片來源段。改了校正表要先 `python -m fd.corrections` 重產校正稿，再用 `--republish` 重發受影響的期別。

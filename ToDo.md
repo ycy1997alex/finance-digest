@@ -21,9 +21,9 @@
 
 ### 現在
 
-- [ ] 確認 D1～D4（下一節）的建議做法，或告訴 Claude Code 要改哪一項
+- [x] 確認 D1～D4（下一節）的建議做法，或告訴 Claude Code 要改哪一項（2026-10-10 本人確認：D1 不進、D2 改為方案 B、D3 OK、D4 不推 LINE）
 - [x] 讓 Claude Code 做第一次 commit 與 push（第 1 節）時，在對話中明確授權（2026-10-09 本人授權）
-- [ ] 停用舊專案的排程：GitHub → `finance-digest-a` → Actions → daily → 右上「⋯」→ **Disable workflow**。不停的話它每天 21:42、22:22 還會跑，失敗就寄信
+- [x] 停用舊專案的排程：GitHub → `finance-digest-a` → Actions → daily → 右上「⋯」→ **Disable workflow**。不停的話它每天 21:42、22:22 還會跑，失敗就寄信（2026-10-10 本人說已處理：直接刪除 `finance-digest-a` repo）
 - [x] repo `finance-digest` → Settings → Pages：Source 選 **Deploy from a branch**，Branch 選 `main`、資料夾 `/docs`（2026-10-09 本人完成，網站已上線）
 
 ### 排程任務
@@ -32,7 +32,7 @@
 
 ### 長期注意
 
-- Gemini Notebook 有用量上限：2026-10-09 一口氣跑 7 份報告後達上限，每天 1 份不會碰到；補跑多天時要分批
+- Gemini Notebook 有用量上限：約 5 小時 7 份（2026-10-10 本人說明）；每天 1 份不會碰到，補出多天時 RUNBOOK 會自動分批
 - 要分享給家人或朋友的 LINE 群組、社群時，由本人用網站上的「複製 LINE 版」按鈕手動貼，或直接給網址與密碼
 
 ---
@@ -42,7 +42,7 @@
 | # | 項目 | 建議做法 | 理由 |
 |---|---|---|---|
 | D1 | 報告明文要不要進 public repo | **不進**。`reports/` 已加進 `.gitignore`（2026-10-09 先加，本人改決定的話再拿掉）；網站上的報告一律加密 | 沿用舊專案的決定（密碼鎖 + noindex）。公開 repo 一旦 push 明文就永久留在 git 歷史，事後無法撤回 |
-| D2 | 網站放哪裡 | 本 repo 的 GitHub Pages，`main` 分支的 `/docs` 資料夾：`https://ycy1997alex.github.io/finance-digest/` | public repo 免費可開 Pages；用 `/docs` 不需要 GitHub Actions workflow，本機 push 後 Pages 自動部署 |
+| D2 | 網站放哪裡 | **2026-10-10 本人改為方案 B**：程式與資料放私人 repo `ycy1997alex/finance-digest_private`，公開 repo `finance-digest` 只放網站 `docs/`（待實作，見第 7 節）。原建議：本 repo 的 GitHub Pages，`main` 分支的 `/docs` 資料夾：`https://ycy1997alex.github.io/finance-digest/` | public repo 免費可開 Pages；用 `/docs` 不需要 GitHub Actions workflow，本機 push 後 Pages 自動部署 |
 | D3 | 網站密碼 | 沿用本機已有的使用者環境變數 `SITE_PASSWORD`（舊專案設定的那組） | 不需要新設定；換密碼的做法照舊專案 README「密碼與主金鑰」 |
 | D4 | 補跑的 10/1～10/8 要不要推 LINE | 已不適用：2026-10-09 本人決定完全不做 LINE 推播 | — |
 
@@ -109,13 +109,23 @@
 ## 6. 改善項目（不急）
 
 - [ ] `tools/yt_discover.js` 的 `RULES` 與 `config/channels.yaml` 是兩份手寫資料，加一個檢查（pytest 讀 yaml 與 js 比對 inc／exc／min／weekend_only／publish_weekdays）→ verify: 改一邊不改另一邊時測試失敗
-- [ ] `config/twse_holidays.json` 只到 2026 年；年底前抓 2027 年的證交所休市日期表（`https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule`）
+- [ ] `config/twse_holidays.json` 只含當年度；每年年底前抓下一年的證交所休市日期表（`https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule`）。2026-10-10 已建排程任務「證交所休市日表更新提醒」，每年 12/1 08:49 寄信提醒並查 API 是否已有明年資料
 - [x] `reports/2026-10-02_Fri.txt` 影片來源清單把「黃豐凱」寫成「黃風凱」（Gemini 抄錯）；本人決定要不要手改（2026-10-09：改用校正表 `config/corrections.yaml` 在發布時修正，原稿不動）
 - [x] 校正表 `config/corrections.yaml` 裡待確認的項目：元大 10/07 的「張豐進」是否為「陳豐進」→ 本人確認後拿掉該行開頭的 `#`，重發 10/07（2026-10-09：本人查證為「游豐進」，校正表改為 張豐進 → 游豐進，10/07 已重發）
 - [ ] 每週看一次 `python -m fd.corrections` 的人名清單，有同一人兩種寫法就加進校正表、重發受影響的期別
-- [ ] 每月檢查一次 `processed.json` 有沒有照 RUNBOOK 刪掉 30 天前的紀錄
+- [x] ~~每月檢查一次 `processed.json` 有沒有照 RUNBOOK 刪掉 30 天前的紀錄~~（2026-10-10 本人決定紀錄一直累積，不刪；RUNBOOK 第 5 步已改）
 
 ---
+
+## 7. repo 分工改為方案 B（2026-10-10 本人決定）
+
+私人 repo `ycy1997alex/finance-digest_private`（程式與資料）＋ 公開 repo `ycy1997alex/finance-digest`（只放 `docs/`）。決定已寫進 AGENTS.md。
+
+- [ ] 本機 repo 的 `origin` 改指向 `finance-digest_private`，推上完整歷史 → verify: 私人 repo 看得到全部檔案
+- [ ] `publish.py` 第 7 步改成：本機 commit 到私人 repo，另把 `docs/` 同步到公開 repo 再 push（公開 repo 只有 `docs/`）→ verify: 測試用假的 git 通過；實際發布一期後網站正常
+- [ ] 公開 repo 移除 `docs/` 以外的檔案（歷史保留，本人接受）→ verify: GitHub 上公開 repo 只看到 `docs/`
+- [ ] 更新 AGENTS.md（自動 commit 例外的路徑與 repo）、RUNBOOK 第 6 步、README
+- [ ] push 前在對話中取得本人授權
 
 ## 決策紀錄
 
@@ -135,4 +145,8 @@
 | 2026-10-09 | Gemini 的人名、頻道寫法不一致或聽錯，用校正表 `config/corrections.yaml` 在發布時修正（`fd/corrections.py`）：只改要發布的副本，`reports/` 原稿不改；分析師別名只改人名位置，影片來源段（YouTube 原始標題）不改 |
 | 2026-10-09 | **不做 LINE 推播**：網頁版已完全達到需要的效果，網站是唯一的發布方式。保留網站的「複製 LINE 版」按鈕（`line_short`），需要分享時本人手動貼；不建 LINE 官方帳號、不搬 `line.py` |
 | 2026-10-09 | 本人授權 Claude Code 在對話中先用 `/git-commit` 寫訊息後自行 commit 與 push（每段對話各自授權，寫進 AGENTS.md） |
+| 2026-10-10 | 沒開機或失敗漏掉的日子，下次執行逐日補出報告（RUNBOOK 第 0 步）；Gemini 用量約 **5 小時 7 份**，每次執行最多 3 份、5 小時內合計最多 6 份 |
+| 2026-10-10 | 匯入失敗的影片先移除失敗來源、單獨再插入一次，仍失敗才放棄（`tools/notebook_run.js`） |
+| 2026-10-10 | `processed.json` 的影片紀錄一直累積、不刪除 |
+| 2026-10-10 | repo 改為方案 B：私人 `finance-digest_private` 放程式與資料，公開 `finance-digest` 只放網站（見第 7 節） |
 | 2026-10-09 | 報告檢查只有「標題與日期、必要章節（含影片來源）、繁中、無簡體字」擋發布；分析師區塊截斷等只印提醒（10/04 林漢偉區塊是 Gemini 漏寫，報告不改，照原文發布） |
