@@ -471,7 +471,7 @@ dialog::backdrop{background:rgba(10,12,16,.5)}
 /* ======================================================================
  * 財經節目每日摘要。內容全部是密文：密碼 → PBKDF2 → 解開 data/keyring.json 的主金鑰
  * → 解開 data/index.enc（各期清單與追蹤索引）與 data/r/日期.enc（每期報告）。
- * 格式與 Python 的 finance_digest_a/crypto.py 相同。sessionStorage 只存主金鑰，不存密碼。
+ * 格式與 Python 的 fd/crypto.py 相同。sessionStorage 只存主金鑰，不存密碼。
  * 所有內容都是模型輸出，一律經 esc() 轉義後才放進 HTML。
  * ==================================================================== */
 const SITE_TITLE = "財經節目每日摘要";
